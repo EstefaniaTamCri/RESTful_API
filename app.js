@@ -1,21 +1,36 @@
-//cargamos modulo HTTP en el servidor
-const http = require("http");
-//declaramos el puerto donde lanzamos el servidor
+//configuracion inical de la aplicacion
+const express = require('express');
+const mongoose = require('mongoose');
 const PORT = 8000;
 
-const server = http
-  .createServer(
-    //req contiene los detalles de la solicitud
-    //res envia la respuesta al cliente
-    (req, res) => {
-      res.statusCode = 200; //codigo de estado de la respuesta, todo ok
+//creamos la aplicacion de express
+const app = express();
 
-      res.setHeader("Content-Type", "text/html"); //establecemos el tipo de contenido de la respuesta
+//analizar los archivos JSON
+app.use(express.json());
 
-      res.end("<h1>Hello World</h1> </br> <h2> Estefania Tamayo Criado</h2>"); //respuesta que enviamos al cliente, en este caso tipo html
-    }
-  )
-  .listen(PORT, () => {
-    //imprimimos en consola el puerto donde se esta ejecutando el servidor
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
+//damos permiso a la aplicacion para que pueda acceder a la base de datos
+require('dotenv').config();
+
+//obtenemos la cadena de conexion de la base de datos desde las variables de entorno (fichero.env)
+const mongoUrl = process.env.DATABASE_URL_DEV;
+
+//Configuracion con mongodb
+//useNewUrlParser: true -> le indica a monoose que utilice el nuevo analizador de URL de la cadena de conexcion
+mongoose.connect(mongoUrl, { useNewUrlParser: true});
+
+//guardamos la conexion con mongoose
+const db = mongoose.connection;
+
+//verificamos que la conexion se ha realizado correctamente
+db.on('error', () => {console.error('Error:', error)});
+
+//nos indica que se establecido la conexion correctamente
+db.once('connected', () => {console.log('Success connect')});
+
+//nos indica que la conexion se ha desconectado
+db.on('disconnected', () => {console.log('Mongoose conecction is disconnected')});
+
+app.listen(PORT, () => {
+    console.log(`Server running http://localhost:${PORT}`);
+})
