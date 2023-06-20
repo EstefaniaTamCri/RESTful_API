@@ -41,17 +41,6 @@ const users = require("./Controller/userController");
 const { type } = require("os");
 app.use("/users", users);
 
-const ejemplo = {
-  leadership: "Carismático y líder nato",
-  charisma: "Posee un gran carisma",
-};
-
-console.log(
-  "resultado final ->",
-  ejemplo.contrsuctor === Object &&
-    Object.values(ejemplo).every((element) => typeof element === "string")
-);
-
 app.listen(PORT, () => {
   console.log(`Server running http://localhost:${PORT}`);
 });

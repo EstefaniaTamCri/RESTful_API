@@ -24,27 +24,34 @@ const userSchema = new Schema({
     required: true,
     default: [],
     validate: [
-      array.length === 0 ||
+      (array) =>
+        array.length === 0 ||
         array.every((element) => {
           const keys = Object.keys(element);
-          return (
-            keys.every((keys) => typeof element[keys[0]] === "boolean") &&
-            typeof element[keys[1]] === "string"
+          return keys.every(
+            () =>
+              typeof element[keys[0]] === "boolean" &&
+              typeof element[keys[1]] === "string"
           );
         }),
-      "No son correctas",
+      "Wrong skills array",
     ],
   },
   personality: {
-    personality: {
-      type: Object,
-      required: true,
-      validate: [
-        (obj) =>
-          obj.constructor === Object &&
-          Object.values(obj).every((element) => typeof element === "string"),
-        "Wrong personality object",
-      ],
-    },
+    type: Object,
+    required: true,
+    validate: [
+      (obj) =>
+        obj.constructor === Object &&
+        Object.values(obj).every((element) => typeof element === "string"),
+      "Wrong personality object",
+    ],
   },
 });
+
+//el 1º parametro es como llamamos a nuestro modelo,
+//el 2º es referiado a la estructura que hemos realizado (esquema)
+//el tercer parametro es el nombre de la collecion en la base de datos
+const User = mongoose.model("User", userSchema, "users");
+
+module.exports = User;
