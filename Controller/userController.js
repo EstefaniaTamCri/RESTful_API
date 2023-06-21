@@ -3,9 +3,10 @@ const router = express.Router();
 
 //importamos el modelo de UserModel
 const User = require("../Model/userModel");
+const { verifyToken } = require("../lib/utils");
 
 //Get, obtener todos los usuarios
-router.get("/", async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     const data = await User.find();
     res.status(200).json({ status: "succeeded", data, error: null });
@@ -17,7 +18,7 @@ router.get("/", async (req, res) => {
 });
 
 //Get, obtener un único usuario por su id
-router.get("/:id", async (req, res) => {
+router.get("/:id", verifyToken, async (req, res) => {
   try {
     const id = req.params.id;
     const data = await User.findById(id);
